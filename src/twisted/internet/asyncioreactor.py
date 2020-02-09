@@ -19,10 +19,15 @@ from twisted.internet.posixbase import (PosixReactorBase, _NO_FILEDESC,
 from twisted.python.log import callWithLogger
 from twisted.internet.interfaces import IReactorFDSet
 
+import sys
+
 try:
-    from asyncio import get_event_loop
+    from asyncio import get_event_loop, set_event_loop_policy, WindowsSelectorEventLoopPolicy
 except ImportError:
     raise ImportError("Requires asyncio.")
+
+if sys.platform == 'win32':
+    set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 # As per ImportError above, this module is never imported on python 2, but
 # pyflakes still runs on python 2, so let's tell it where the errors come from.
